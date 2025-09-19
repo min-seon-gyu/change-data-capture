@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: charge-data-capture
+    admin:
+      enabled: true
+  docker:
+    compose:
+      lifecycle-management: start_only
+  datasource:
+    url: jdbc:mysql://mysql:3306/example?characterEncoding=utf8&useUnicode=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul
+    username: spring
+    password: secret
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    properties:
+      hibernate.dialect: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+  kafka:
+    consumer:
+      group-id: charge-data-capture-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        # Kafka 브로커 연결 재시도 간격 (ms)
+        reconnect.backoff.ms: 1000
+        # Kafka 요청 재시도 간격 (ms)
+        retry.backoff.ms: 1000
+    listener:
+      # 애플리케이션 시작 시 Kafka 리스너가 브로커를 기다리는 최대 시간
+      startup-timeout: 60s
